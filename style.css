@@ -1,0 +1,341 @@
+/* =========================================================================
+   AR Nouns — Design System (soft dark, nature-tone)
+   Dark shell with a playful accent palette; a light "paper" surface is used
+   for the AR label overlay so text stays legible regardless of background.
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap');
+
+:root {
+    /* --- Brand accents --- */
+    --leaf-100: #DEFBEF;
+    --leaf-300: #8DEFC7;
+    --leaf-500: #3DDC97;
+    --leaf-700: #0E8F63;
+
+    --sun-100: #FFF1D6;
+    --sun-300: #FFCD7A;
+    --sun-500: #F5A623;
+    --sun-700: #B9740A;
+
+    --sky-100: #DFF4FC;
+    --sky-300: #8FDCF5;
+    --sky-500: #3DB8E8;
+    --sky-700: #1C7FA3;
+
+    --coral-100: #FFE7E3;
+    --coral-300: #FFAFA2;
+    --coral-500: #FF7A68;
+    --coral-700: #D8452F;
+
+    /* --- Soft dark app shell --- */
+    --bg: #1B2624;
+    --surface: #24322F;
+    --surface-2: #2D3E39;
+    --line: #3B4E48;
+    --text: #F1F5F3;
+    --text-soft: #9FB5AC;
+
+    /* --- Light "paper" surface (AR label overlay) --- */
+    --paper: #FFFDF8;
+    --ink: #26333B;
+    --ink-soft: #5B6B73;
+
+    --radius-xl: 28px;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --radius-pill: 999px;
+
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.22);
+    --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.26);
+    --shadow-lg: 0 14px 30px rgba(0, 0, 0, 0.32);
+
+    --font-heading: 'Baloo 2', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --font-body: 'Baloo 2', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overscroll-behavior: none;
+}
+
+body {
+    background: var(--bg);
+    background-image:
+        radial-gradient(circle at 25px 25px, rgba(141, 239, 199, 0.10) 2.5px, transparent 0%),
+        radial-gradient(circle at 75px 75px, rgba(255, 205, 122, 0.10) 2.5px, transparent 0%);
+    background-size: 100px 100px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--text);
+    overflow: hidden;
+}
+
+/* --- Top-right page actions (fullscreen / install) --- */
+.top-actions {
+    position: fixed;
+    top: clamp(8px, 2vmin, 18px);
+    right: clamp(8px, 2vmin, 18px);
+    z-index: 50;
+    display: flex;
+    gap: 8px;
+}
+
+.icon-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(34px, 6vmin, 44px);
+    height: clamp(34px, 6vmin, 44px);
+    padding: 0;
+    background: rgba(36, 50, 47, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-pill);
+    color: var(--text);
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0.7;
+    transition: opacity 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+}
+
+.icon-action-btn svg { width: 58%; height: 58%; }
+
+.icon-action-btn:hover {
+    opacity: 1;
+    background: rgba(36, 50, 47, 0.85);
+    transform: scale(1.06);
+}
+
+.icon-action-btn:active { transform: scale(0.96); }
+.icon-action-btn[hidden] { display: none; }
+
+/* --- Buttons --- */
+.btn {
+    font-family: var(--font-heading);
+    background: var(--leaf-500);
+    border: none;
+    color: #123328;
+    padding: 0.8em 1.8em;
+    font-size: clamp(16px, 2.4vmin, 22px);
+    font-weight: 700;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--leaf-700), var(--shadow-sm);
+    margin: 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 0 var(--leaf-700), var(--shadow-md); }
+.btn:active { transform: translateY(2px) scale(0.98); box-shadow: 0 2px 0 var(--leaf-700); }
+
+.btn.btn-secondary {
+    background: var(--surface-2);
+    color: var(--sun-300);
+    border: 2px solid var(--sun-700);
+    box-shadow: 0 4px 0 var(--sun-700), var(--shadow-sm);
+}
+
+/* --- Start / menu screen --- */
+.start-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6vmin 20px;
+    background-image:
+        radial-gradient(circle, rgba(255, 205, 122, 0.14), transparent 70%),
+        radial-gradient(circle, rgba(61, 220, 151, 0.16), transparent 70%);
+    background-position: -90px -90px, calc(100% + 110px) calc(100% + 110px);
+    background-size: 320px 320px, 340px 340px;
+    background-repeat: no-repeat, no-repeat;
+    text-align: center;
+}
+
+.start-screen[hidden] { display: none; }
+
+.brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: clamp(10px, 2.4vmin, 20px);
+}
+
+.brand-icon {
+    width: clamp(56px, 12vmin, 84px);
+    height: clamp(56px, 12vmin, 84px);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.start-screen h1 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: clamp(26px, 6vmin, 44px);
+    margin: 0;
+}
+
+.start-screen p {
+    max-width: 480px;
+    font-size: clamp(14px, 2.2vmin, 18px);
+    color: var(--text-soft);
+    line-height: 1.5;
+    margin: 0 0 clamp(16px, 3vmin, 28px);
+}
+
+.start-screen p strong { color: var(--text); }
+
+.noun-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    max-width: 520px;
+    margin-bottom: clamp(16px, 3vmin, 30px);
+}
+
+.noun-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    padding: 8px 16px 8px 10px;
+    box-shadow: var(--shadow-sm);
+    font-size: clamp(13px, 2vmin, 16px);
+    font-weight: 700;
+    color: var(--text);
+}
+
+.noun-chip .emoji { font-size: 1.3em; }
+
+.noun-chip-empty {
+    color: var(--text-soft);
+    font-weight: 600;
+    font-size: clamp(13px, 2vmin, 15px);
+}
+
+/* --- AR view --- */
+.ar-view {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(16px, 4vmin, 40px);
+    overflow: hidden;
+}
+
+.ar-view[hidden] { display: none; }
+
+.ar-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: transparent;
+    border: 1px solid var(--line);
+    box-shadow: 0 0 0 100vmax var(--bg), var(--shadow-lg);
+}
+
+#ar-scene-container, #ar-scene-container a-scene {
+    width: 100%;
+    height: 100%;
+}
+
+.ar-back-btn {
+    position: absolute;
+    top: clamp(8px, 2vmin, 16px);
+    left: clamp(8px, 2vmin, 16px);
+    z-index: 70;
+}
+
+.scan-hint {
+    position: absolute;
+    top: clamp(8px, 2vmin, 16px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 40;
+    background: rgba(36, 50, 47, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: var(--text);
+    padding: 8px 18px;
+    border-radius: var(--radius-pill);
+    font-size: clamp(12px, 1.8vmin, 15px);
+    font-weight: 600;
+    text-align: center;
+    max-width: 80vw;
+}
+
+.arjs-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.arjs-loader[hidden] { display: none; }
+
+.arjs-loader .spinner {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 5px solid var(--surface-2);
+    border-top-color: var(--leaf-500);
+    animation: spin 0.9s linear infinite;
+}
+
+.arjs-loader div.loader-text {
+    font-weight: 700;
+    color: var(--text-soft);
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Noun label overlay (paper card, always readable) --- */
+.noun-label {
+    position: absolute;
+    bottom: clamp(20px, 5vh, 50px);
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    z-index: 45;
+    background: var(--paper);
+    padding: 14px 28px;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.noun-label.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.noun-label .en { font-size: clamp(18px, 3vmin, 26px); font-weight: 800; color: var(--coral-700); }
+.noun-label .bm { font-size: clamp(15px, 2.4vmin, 20px); font-weight: 700; color: var(--ink); }
+.noun-label .semai { font-size: clamp(14px, 2.2vmin, 18px); font-weight: 600; color: var(--sky-700); font-style: italic; }

@@ -2,6 +2,7 @@
   "nouns": [
     {
       "id": "tiger",
+      "emoji": "🐯",
       "marker": "markers/tiger/tiger-marker",
       "labels": {
         "en": "Tiger",
@@ -9,8 +10,10 @@
         "semai": "Mergas"
       },
       "model": {
-        "type": "placeholder-box",
-        "color": "#F5A623"
+        "type": "sprite",
+        "url": "assets/sprites/tiger.png",
+        "width": 5000,
+        "height": 4600
       }
     }
   ]
