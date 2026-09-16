@@ -103,7 +103,7 @@ let tuneTarget = null; // { wrapper, img, baseWidth, baseHeight }
 // system (hundreds of units), not meters - so sizes/positions here are large.
 function buildModelEntity(model) {
   const wrapper = document.createElement('a-entity');
-  wrapper.setAttribute('position', '0 1300 0');
+  wrapper.setAttribute('position', '120 1550 0');
   if (!TUNE_MODE) {
     wrapper.setAttribute('animation', 'property: position; to: 0 1550 0; dir: alternate; loop: true; dur: 1000; easing: easeInOutSine');
     wrapper.setAttribute('animation__wiggle', 'property: rotation; to: 0 0 6; dir: alternate; loop: true; dur: 900; easing: easeInOutSine');
