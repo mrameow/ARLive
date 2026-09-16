@@ -1,5 +1,27 @@
 let nouns = [];
 let selectedCameraId = '';
+let availableCameras = [];
+
+// --- On-screen debug panel (no DevTools needed on phone) ---
+const debugPanel = document.getElementById('debug-panel');
+function dlog(...args) {
+  const line = args.map((a) => {
+    if (a instanceof Error) return a.message + '\n' + (a.stack || '');
+    if (typeof a === 'object') { try { return JSON.stringify(a); } catch (e) { return String(a); } }
+    return String(a);
+  }).join(' ');
+  console.log(...args);
+  if (debugPanel) {
+    debugPanel.textContent += line + '\n';
+    debugPanel.scrollTop = debugPanel.scrollHeight;
+  }
+}
+window.addEventListener('error', (event) => {
+  dlog('[window.onerror]', event.message, event.filename + ':' + event.lineno);
+});
+window.addEventListener('unhandledrejection', (event) => {
+  dlog('[unhandledrejection]', event.reason);
+});
 
 const startScreen = document.getElementById('start-screen');
 const arView = document.getElementById('ar-view');
@@ -12,36 +34,31 @@ const label = document.getElementById('noun-label');
 const labelEn = label.querySelector('.en');
 const labelBm = label.querySelector('.bm');
 const labelSemai = label.querySelector('.semai');
-const cameraPicker = document.getElementById('camera-picker');
-const cameraSelect = document.getElementById('camera-select');
+const cameraToggleBtn = document.getElementById('camera-toggle-btn');
 
-// --- Camera picker ---
+// --- Camera picker (cycle button) ---
 function refreshCameraList() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
   navigator.mediaDevices.enumerateDevices().then((devices) => {
-    const cams = devices.filter((d) => d.kind === 'videoinput');
-    if (cams.length < 2) {
-      cameraPicker.hidden = true;
-      return;
+    availableCameras = devices.filter((d) => d.kind === 'videoinput');
+    cameraToggleBtn.hidden = availableCameras.length < 2;
+    if (!selectedCameraId && availableCameras.length) {
+      selectedCameraId = availableCameras[0].deviceId;
     }
-    const previousValue = cameraSelect.value;
-    cameraSelect.innerHTML = '';
-    cams.forEach((cam, i) => {
-      const option = document.createElement('option');
-      option.value = cam.deviceId;
-      option.textContent = cam.label || `Kamera ${i + 1}`;
-      cameraSelect.appendChild(option);
-    });
-    if (previousValue && cams.some((c) => c.deviceId === previousValue)) {
-      cameraSelect.value = previousValue;
-    }
-    selectedCameraId = cameraSelect.value;
-    cameraPicker.hidden = false;
   }).catch(() => {});
 }
 
-cameraSelect.addEventListener('change', () => {
-  selectedCameraId = cameraSelect.value;
+cameraToggleBtn.addEventListener('click', () => {
+  if (!availableCameras.length) return;
+  const currentIndex = availableCameras.findIndex((c) => c.deviceId === selectedCameraId);
+  const nextIndex = (currentIndex + 1) % availableCameras.length;
+  selectedCameraId = availableCameras[nextIndex].deviceId;
+  if (!arView.hidden) {
+    stopAllCameraTracks();
+    sceneContainer.innerHTML = '';
+    arjsLoader.hidden = false;
+    sceneContainer.appendChild(buildScene());
+  }
 });
 
 if (navigator.mediaDevices) {
@@ -140,11 +157,21 @@ function buildNftEntity(noun) {
   debugBoxPixels.setAttribute('position', '-600 250 0');
   nft.appendChild(debugBoxPixels);
 
+  dlog('[nft built]', noun.id, 'children=', nft.children.length);
+
+  let foundCount = 0;
   nft.addEventListener('markerFound', () => {
+    foundCount++;
     labelEn.textContent = noun.labels.en;
     labelBm.textContent = noun.labels.bm;
     labelSemai.textContent = noun.labels.semai;
     label.classList.add('visible');
+    if (foundCount === 1) {
+      dlog('[markerFound]', noun.id, 'nft.visible=', nft.object3D.visible, 'nft.children=', nft.object3D.children.length);
+      nft.object3D.children.forEach((child, i) => {
+        dlog(' child' + i, child.type, 'visible=', child.visible, 'pos=', child.position.toArray().map((n) => Math.round(n)));
+      });
+    }
   });
 
   nft.addEventListener('markerLost', () => {
@@ -165,14 +192,24 @@ function buildScene() {
   scene.setAttribute('arjs', `sourceType: webcam; trackingMethod: best; debugUIEnabled: true; cameraParametersUrl: ${cameraParametersUrl};${deviceIdPart}`);
   scene.setAttribute('renderer', 'logarithmicDepthBuffer: true; precision: medium;');
 
-  nouns.forEach((noun) => scene.appendChild(buildNftEntity(noun)));
+  nouns.forEach((noun) => {
+    try {
+      scene.appendChild(buildNftEntity(noun));
+    } catch (err) {
+      dlog('[buildNftEntity ERROR]', noun.id, err);
+    }
+  });
 
   const cameraEl = document.createElement('a-entity');
   cameraEl.setAttribute('camera', '');
   scene.appendChild(cameraEl);
 
+  dlog('[scene built] a-nft count=', scene.querySelectorAll('a-nft').length);
+
   scene.addEventListener('loaded', () => {
+    dlog('[scene loaded event]');
     window.addEventListener('arjs-video-loaded', () => {
+      dlog('[arjs-video-loaded]');
       arjsLoader.hidden = true;
       refreshCameraList();
     }, { once: true });

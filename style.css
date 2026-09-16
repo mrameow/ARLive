@@ -221,34 +221,34 @@ body {
 
 .noun-chip .emoji { font-size: 1.3em; }
 
-.camera-picker {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-pill);
-    padding: 8px 18px 8px 16px;
-    box-shadow: var(--shadow-sm);
-    margin-bottom: clamp(6px, 1.5vmin, 14px);
-    font-size: clamp(13px, 2vmin, 15px);
-    font-weight: 600;
-    color: var(--text-soft);
+.camera-toggle-btn {
+    font-size: clamp(13px, 1.8vmin, 16px);
+    padding: 0.55em 1.3em;
 }
 
-.camera-picker[hidden] { display: none; }
+.camera-toggle-btn[hidden] { display: none; }
 
-.camera-picker select {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: clamp(13px, 2vmin, 15px);
-    color: var(--text);
-    background: var(--surface-2);
-    border: 1px solid var(--line);
+.debug-panel {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    max-height: 30vh;
+    overflow-y: auto;
+    z-index: 80;
+    margin: 0;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #7CFF9E;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-all;
     border-radius: var(--radius-sm);
-    padding: 4px 10px;
-    max-width: 55vw;
 }
+
+.debug-panel:empty { display: none; }
 
 .noun-chip-empty {
     color: var(--text-soft);
