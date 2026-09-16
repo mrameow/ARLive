@@ -1,9 +1,9 @@
-const CACHE_NAME = 'ar-nouns-cache-v9';
+const CACHE_NAME = 'ar-nouns-cache-v10';
 const urlsToCache = [
   './',
   './index.html',
-  './style.css?v=12',
-  './app.js?v=12',
+  './style.css?v=13',
+  './app.js?v=13',
   './manifest.json',
   './data/nouns.json',
   './data/camera_para.dat',

@@ -12,8 +12,8 @@
       "model": {
         "type": "sprite",
         "url": "assets/sprites/tiger.png",
-        "width": 1000,
-        "height": 849
+        "width": 800,
+        "height": 679
       }
     }
   ]
