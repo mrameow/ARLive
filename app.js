@@ -97,8 +97,8 @@ function renderNounChips() {
 // system (hundreds of units), not meters - so sizes/positions here are large.
 function buildModelEntity(model) {
   const wrapper = document.createElement('a-entity');
-  wrapper.setAttribute('position', '0 900 0');
-  wrapper.setAttribute('animation', 'property: position; to: 0 1300 0; dir: alternate; loop: true; dur: 1000; easing: easeInOutSine');
+  wrapper.setAttribute('position', '0 1300 0');
+  wrapper.setAttribute('animation', 'property: position; to: 0 1550 0; dir: alternate; loop: true; dur: 1000; easing: easeInOutSine');
   wrapper.setAttribute('animation__wiggle', 'property: rotation; to: 0 0 6; dir: alternate; loop: true; dur: 900; easing: easeInOutSine');
 
   if (model && model.type === 'gltf' && model.url) {
@@ -139,24 +139,6 @@ function buildNftEntity(noun) {
 
   nft.appendChild(buildModelEntity(noun.model));
 
-  // TEMP DEBUG: two reference boxes at different coordinate-scale guesses,
-  // plus AR.js's own debug border (debugUIEnabled), to find the real scale.
-  const debugBoxMeters = document.createElement('a-box');
-  debugBoxMeters.setAttribute('color', 'red');
-  debugBoxMeters.setAttribute('width', '0.5');
-  debugBoxMeters.setAttribute('height', '0.3');
-  debugBoxMeters.setAttribute('depth', '0.3');
-  debugBoxMeters.setAttribute('position', '0.6 0.2 0');
-  nft.appendChild(debugBoxMeters);
-
-  const debugBoxPixels = document.createElement('a-box');
-  debugBoxPixels.setAttribute('color', 'blue');
-  debugBoxPixels.setAttribute('width', '400');
-  debugBoxPixels.setAttribute('height', '250');
-  debugBoxPixels.setAttribute('depth', '250');
-  debugBoxPixels.setAttribute('position', '-600 250 0');
-  nft.appendChild(debugBoxPixels);
-
   dlog('[nft built]', noun.id, 'children=', nft.children.length);
 
   let foundCount = 0;
@@ -189,7 +171,7 @@ function buildScene() {
   scene.setAttribute('embedded', '');
   const cameraParametersUrl = new URL('data/camera_para.dat', window.location.href).href;
   const deviceIdPart = selectedCameraId ? ` deviceId: ${selectedCameraId};` : '';
-  scene.setAttribute('arjs', `sourceType: webcam; trackingMethod: best; debugUIEnabled: true; cameraParametersUrl: ${cameraParametersUrl};${deviceIdPart}`);
+  scene.setAttribute('arjs', `sourceType: webcam; trackingMethod: best; debugUIEnabled: false; cameraParametersUrl: ${cameraParametersUrl};${deviceIdPart}`);
   scene.setAttribute('renderer', 'logarithmicDepthBuffer: false; precision: mediump; colorManagement: false;');
 
   nouns.forEach((noun) => {
@@ -203,17 +185,6 @@ function buildScene() {
   const cameraEl = document.createElement('a-entity');
   cameraEl.setAttribute('camera', '');
   scene.appendChild(cameraEl);
-
-  // TEMP DEBUG: fixed sanity-check box, always in front of camera (not
-  // tied to tracking at all) - if this doesn't show either, rendering
-  // itself is broken on this device, not our NFT/scale logic.
-  const sanityBox = document.createElement('a-box');
-  sanityBox.setAttribute('color', 'lime');
-  sanityBox.setAttribute('width', '0.3');
-  sanityBox.setAttribute('height', '0.3');
-  sanityBox.setAttribute('depth', '0.3');
-  sanityBox.setAttribute('position', '0 0 -1');
-  cameraEl.appendChild(sanityBox);
 
   dlog('[scene built] a-nft count=', scene.querySelectorAll('a-nft').length);
 
