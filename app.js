@@ -76,7 +76,7 @@ function buildModelEntity(model) {
 function buildNftEntity(noun) {
   const nft = document.createElement('a-nft');
   nft.setAttribute('type', 'nft');
-  nft.setAttribute('url', noun.marker);
+  nft.setAttribute('url', new URL(noun.marker, window.location.href).href);
   nft.setAttribute('smooth', 'true');
   nft.setAttribute('smoothCount', '10');
   nft.setAttribute('smoothTolerance', '0.01');
@@ -105,7 +105,8 @@ function buildScene() {
   const scene = document.createElement('a-scene');
   scene.setAttribute('vr-mode-ui', 'enabled: false');
   scene.setAttribute('embedded', '');
-  scene.setAttribute('arjs', 'sourceType: webcam; trackingMethod: best; debugUIEnabled: false; cameraParametersUrl: data/camera_para.dat;');
+  const cameraParametersUrl = new URL('data/camera_para.dat', window.location.href).href;
+  scene.setAttribute('arjs', `sourceType: webcam; trackingMethod: best; debugUIEnabled: false; cameraParametersUrl: ${cameraParametersUrl};`);
   scene.setAttribute('renderer', 'logarithmicDepthBuffer: true; precision: medium;');
 
   nouns.forEach((noun) => scene.appendChild(buildNftEntity(noun)));
