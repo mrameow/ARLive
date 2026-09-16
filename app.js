@@ -1,4 +1,5 @@
 let nouns = [];
+let selectedCameraId = '';
 
 const startScreen = document.getElementById('start-screen');
 const arView = document.getElementById('ar-view');
@@ -11,6 +12,42 @@ const label = document.getElementById('noun-label');
 const labelEn = label.querySelector('.en');
 const labelBm = label.querySelector('.bm');
 const labelSemai = label.querySelector('.semai');
+const cameraPicker = document.getElementById('camera-picker');
+const cameraSelect = document.getElementById('camera-select');
+
+// --- Camera picker ---
+function refreshCameraList() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+  navigator.mediaDevices.enumerateDevices().then((devices) => {
+    const cams = devices.filter((d) => d.kind === 'videoinput');
+    if (cams.length < 2) {
+      cameraPicker.hidden = true;
+      return;
+    }
+    const previousValue = cameraSelect.value;
+    cameraSelect.innerHTML = '';
+    cams.forEach((cam, i) => {
+      const option = document.createElement('option');
+      option.value = cam.deviceId;
+      option.textContent = cam.label || `Kamera ${i + 1}`;
+      cameraSelect.appendChild(option);
+    });
+    if (previousValue && cams.some((c) => c.deviceId === previousValue)) {
+      cameraSelect.value = previousValue;
+    }
+    selectedCameraId = cameraSelect.value;
+    cameraPicker.hidden = false;
+  }).catch(() => {});
+}
+
+cameraSelect.addEventListener('change', () => {
+  selectedCameraId = cameraSelect.value;
+});
+
+if (navigator.mediaDevices) {
+  refreshCameraList();
+  navigator.mediaDevices.addEventListener('devicechange', refreshCameraList);
+}
 
 fetch('data/nouns.json')
   .then((res) => res.json())
@@ -106,7 +143,8 @@ function buildScene() {
   scene.setAttribute('vr-mode-ui', 'enabled: false');
   scene.setAttribute('embedded', '');
   const cameraParametersUrl = new URL('data/camera_para.dat', window.location.href).href;
-  scene.setAttribute('arjs', `sourceType: webcam; trackingMethod: best; debugUIEnabled: false; cameraParametersUrl: ${cameraParametersUrl};`);
+  const deviceIdPart = selectedCameraId ? ` deviceId: ${selectedCameraId};` : '';
+  scene.setAttribute('arjs', `sourceType: webcam; trackingMethod: best; debugUIEnabled: false; cameraParametersUrl: ${cameraParametersUrl};${deviceIdPart}`);
   scene.setAttribute('renderer', 'logarithmicDepthBuffer: true; precision: medium;');
 
   nouns.forEach((noun) => scene.appendChild(buildNftEntity(noun)));
@@ -118,6 +156,7 @@ function buildScene() {
   scene.addEventListener('loaded', () => {
     window.addEventListener('arjs-video-loaded', () => {
       arjsLoader.hidden = true;
+      refreshCameraList();
     }, { once: true });
   });
 
@@ -190,3 +229,22 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+
+// --- Hard refresh (clear SW + caches, force fresh reload) ---
+const updateBtn = document.getElementById('update-btn');
+updateBtn.addEventListener('click', async () => {
+  updateBtn.disabled = true;
+  try {
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((reg) => reg.unregister()));
+    }
+    if (window.caches) {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((name) => caches.delete(name)));
+    }
+  } catch (err) {
+    console.error('Gagal kemaskini app', err);
+  }
+  window.location.href = window.location.href.split('#')[0] + '?_r=' + Date.now();
+});

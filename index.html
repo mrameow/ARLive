@@ -28,6 +28,9 @@
     <button class="icon-action-btn" id="install-button" type="button" hidden title="Pasang App" aria-label="Pasang app">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
     </button>
+    <button class="icon-action-btn" id="update-btn" type="button" title="Kemaskini App" aria-label="Kemaskini app (hard refresh)">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg>
+    </button>
   </div>
 
   <div class="start-screen" id="start-screen">
@@ -42,6 +45,10 @@
     </p>
     <div class="noun-chip-list" id="noun-chip-list">
       <span class="noun-chip-empty">Memuatkan senarai noun...</span>
+    </div>
+    <div class="camera-picker" id="camera-picker" hidden>
+      <label for="camera-select">Kamera</label>
+      <select id="camera-select"></select>
     </div>
     <button class="btn" id="start-btn">📷 Mula Imbas</button>
   </div>

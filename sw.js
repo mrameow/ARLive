@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ar-nouns-cache-v1';
+const CACHE_NAME = 'ar-nouns-cache-v2';
 const urlsToCache = [
   './',
   './index.html',

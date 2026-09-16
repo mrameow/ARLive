@@ -221,6 +221,35 @@ body {
 
 .noun-chip .emoji { font-size: 1.3em; }
 
+.camera-picker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    padding: 8px 18px 8px 16px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: clamp(6px, 1.5vmin, 14px);
+    font-size: clamp(13px, 2vmin, 15px);
+    font-weight: 600;
+    color: var(--text-soft);
+}
+
+.camera-picker[hidden] { display: none; }
+
+.camera-picker select {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: clamp(13px, 2vmin, 15px);
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    max-width: 55vw;
+}
+
 .noun-chip-empty {
     color: var(--text-soft);
     font-weight: 600;
