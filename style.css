@@ -221,12 +221,12 @@ body {
 
 .noun-chip .emoji { font-size: 1.3em; }
 
-.camera-toggle-btn {
-    font-size: clamp(13px, 1.8vmin, 16px);
-    padding: 0.55em 1.3em;
+.ar-camera-toggle-btn {
+    position: absolute;
+    top: clamp(8px, 2vmin, 16px);
+    right: clamp(8px, 2vmin, 16px);
+    z-index: 70;
 }
-
-.camera-toggle-btn[hidden] { display: none; }
 
 .debug-panel {
     position: absolute;
