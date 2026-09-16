@@ -1,0 +1,17 @@
+{
+  "nouns": [
+    {
+      "id": "tiger",
+      "marker": "markers/tiger/tiger-marker",
+      "labels": {
+        "en": "Tiger",
+        "bm": "Harimau",
+        "semai": "— (isi ejaan Semai di sini)"
+      },
+      "model": {
+        "type": "placeholder-box",
+        "color": "#F5A623"
+      }
+    }
+  ]
+}

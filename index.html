@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>AR Nouns</title>
+
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+
+  <style>
+    body { margin: 0; overflow: hidden; }
+
+    #noun-label {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.9);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-family: sans-serif;
+      text-align: center;
+      z-index: 999;
+      display: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    #noun-label .en { font-size: 22px; font-weight: bold; color: #d9534f; }
+    #noun-label .bm { font-size: 18px; color: #333; }
+    #noun-label .semai { font-size: 18px; color: #337ab7; font-style: italic; }
+
+    .arjs-loader {
+      height: 100%;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .arjs-loader div {
+      color: white;
+      font-family: sans-serif;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="arjs-loader">
+    <div>Sedang buka kamera... sila tunggu</div>
+  </div>
+
+  <div id="noun-label">
+    <div class="en"></div>
+    <div class="bm"></div>
+    <div class="semai"></div>
+  </div>
+
+  <a-scene
+    id="ar-scene"
+    vr-mode-ui="enabled: false"
+    embedded
+    arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;"
+    renderer="logarithmicDepthBuffer: true;"
+  >
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    const scene = document.querySelector('#ar-scene');
+    const label = document.querySelector('#noun-label');
+    const labelEn = label.querySelector('.en');
+    const labelBm = label.querySelector('.bm');
+    const labelSemai = label.querySelector('.semai');
+
+    function buildModelEntity(model) {
+      const wrapper = document.createElement('a-entity');
+      wrapper.setAttribute('position', '0 0.2 0');
+      wrapper.setAttribute('scale', '1 1 1');
+      wrapper.setAttribute('animation', 'property: position; to: 0 0.4 0; dir: alternate; loop: true; dur: 1200; easing: easeInOutSine');
+
+      if (model && model.type === 'gltf' && model.url) {
+        wrapper.setAttribute('gltf-model', `url(${model.url})`);
+      } else {
+        const box = document.createElement('a-box');
+        box.setAttribute('color', (model && model.color) || '#F5A623');
+        box.setAttribute('width', '0.5');
+        box.setAttribute('height', '0.3');
+        box.setAttribute('depth', '0.3');
+        box.setAttribute('position', '0 0 0');
+        wrapper.appendChild(box);
+      }
+
+      return wrapper;
+    }
+
+    function buildNftEntity(noun) {
+      const nft = document.createElement('a-nft');
+      nft.setAttribute('type', 'nft');
+      nft.setAttribute('url', noun.marker);
+      nft.setAttribute('smooth', 'true');
+      nft.setAttribute('smoothCount', '10');
+      nft.setAttribute('smoothTolerance', '0.01');
+      nft.setAttribute('smoothThreshold', '5');
+      nft.dataset.nounId = noun.id;
+
+      nft.appendChild(buildModelEntity(noun.model));
+
+      nft.addEventListener('markerFound', () => {
+        labelEn.textContent = noun.labels.en;
+        labelBm.textContent = noun.labels.bm;
+        labelSemai.textContent = noun.labels.semai;
+        label.style.display = 'block';
+      });
+
+      nft.addEventListener('markerLost', () => {
+        label.style.display = 'none';
+      });
+
+      return nft;
+    }
+
+    fetch('data/nouns.json')
+      .then((res) => res.json())
+      .then((data) => {
+        (data.nouns || []).forEach((noun) => {
+          scene.appendChild(buildNftEntity(noun));
+        });
+      })
+      .catch((err) => {
+        console.error('Gagal memuatkan data/nouns.json', err);
+      });
+
+    window.addEventListener('arjs-video-loaded', () => {
+      document.querySelector('.arjs-loader').style.display = 'none';
+    });
+  </script>
+
+</body>
+</html>
