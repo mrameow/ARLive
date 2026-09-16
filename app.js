@@ -54,7 +54,7 @@ cameraToggleBtn.addEventListener('click', () => {
   const nextIndex = (currentIndex + 1) % availableCameras.length;
   selectedCameraId = availableCameras[nextIndex].deviceId;
   if (!arView.hidden) {
-    stopAllCameraTracks();
+    teardownArSession();
     sceneContainer.innerHTML = '';
     arjsLoader.hidden = false;
     sceneContainer.appendChild(buildScene());
@@ -218,13 +218,20 @@ function buildScene() {
   return scene;
 }
 
-function stopAllCameraTracks() {
+function teardownArSession() {
+  // AR.js appends #arjs-video (and, with debugUIEnabled, #arjsDebugUIContainer)
+  // directly to <body>, outside our scene container - clearing the container
+  // alone leaves these behind and confuses the next ARToolKit instance.
   document.querySelectorAll('video').forEach((video) => {
     const stream = video.srcObject;
     if (stream && stream.getTracks) {
       stream.getTracks().forEach((track) => track.stop());
     }
+    video.srcObject = null;
+    video.remove();
   });
+  const debugUi = document.getElementById('arjsDebugUIContainer');
+  if (debugUi) debugUi.remove();
 }
 
 startBtn.addEventListener('click', () => {
@@ -237,7 +244,7 @@ startBtn.addEventListener('click', () => {
 });
 
 backBtn.addEventListener('click', () => {
-  stopAllCameraTracks();
+  teardownArSession();
   sceneContainer.innerHTML = '';
   arView.hidden = true;
   startScreen.hidden = false;
