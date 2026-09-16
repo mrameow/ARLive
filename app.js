@@ -58,6 +58,7 @@ cameraToggleBtn.addEventListener('click', () => {
     sceneContainer.innerHTML = '';
     arjsLoader.hidden = false;
     sceneContainer.appendChild(buildScene());
+    if (window.__initTuneSliders) window.__initTuneSliders();
   }
 });
 
@@ -93,13 +94,20 @@ function renderNounChips() {
 
 // --- AR content (the thing that "comes alive" on top of a found marker) ---
 
+// TEMP TUNE MODE: lets the user drag sliders to find good size/position
+// values live, instead of guess-push-test round trips. Remove once done.
+const TUNE_MODE = true;
+let tuneTarget = null; // { wrapper, img, baseWidth, baseHeight }
+
 // NFT anchor content uses the marker image's own pixel-scale coordinate
 // system (hundreds of units), not meters - so sizes/positions here are large.
 function buildModelEntity(model) {
   const wrapper = document.createElement('a-entity');
   wrapper.setAttribute('position', '0 1300 0');
-  wrapper.setAttribute('animation', 'property: position; to: 0 1550 0; dir: alternate; loop: true; dur: 1000; easing: easeInOutSine');
-  wrapper.setAttribute('animation__wiggle', 'property: rotation; to: 0 0 6; dir: alternate; loop: true; dur: 900; easing: easeInOutSine');
+  if (!TUNE_MODE) {
+    wrapper.setAttribute('animation', 'property: position; to: 0 1550 0; dir: alternate; loop: true; dur: 1000; easing: easeInOutSine');
+    wrapper.setAttribute('animation__wiggle', 'property: rotation; to: 0 0 6; dir: alternate; loop: true; dur: 900; easing: easeInOutSine');
+  }
 
   if (model && model.type === 'gltf' && model.url) {
     const entity = document.createElement('a-entity');
@@ -113,6 +121,9 @@ function buildModelEntity(model) {
     img.setAttribute('height', model.height || 460);
     img.setAttribute('material', 'side: double');
     wrapper.appendChild(img);
+    if (TUNE_MODE) {
+      tuneTarget = { wrapper, img, baseWidth: model.width || 500, baseHeight: model.height || 460 };
+    }
   } else {
     const box = document.createElement('a-box');
     box.setAttribute('color', (model && model.color) || '#F5A623');
@@ -223,6 +234,7 @@ startBtn.addEventListener('click', () => {
   label.classList.remove('visible');
   sceneContainer.innerHTML = '';
   sceneContainer.appendChild(buildScene());
+  if (window.__initTuneSliders) window.__initTuneSliders();
 });
 
 backBtn.addEventListener('click', () => {
@@ -242,6 +254,46 @@ fullscreenBtn.addEventListener('click', () => {
     document.exitFullscreen().catch(() => {});
   }
 });
+
+// --- TEMP TUNE MODE: live slider controls for sprite size/position ---
+if (TUNE_MODE) {
+  const tunePanel = document.getElementById('tune-panel');
+  const sizeSlider = document.getElementById('tune-size');
+  const xSlider = document.getElementById('tune-x');
+  const ySlider = document.getElementById('tune-y');
+  const sizeVal = document.getElementById('tune-size-val');
+  const xVal = document.getElementById('tune-x-val');
+  const yVal = document.getElementById('tune-y-val');
+
+  function initTuneSliders() {
+    if (!tuneTarget) return;
+    const pos = tuneTarget.wrapper.getAttribute('position');
+    sizeSlider.value = tuneTarget.baseWidth;
+    xSlider.value = Math.round(pos.x);
+    ySlider.value = Math.round(pos.y);
+    sizeVal.textContent = sizeSlider.value;
+    xVal.textContent = xSlider.value;
+    yVal.textContent = ySlider.value;
+    tunePanel.hidden = false;
+  }
+
+  function applyTuneValues() {
+    if (!tuneTarget) return;
+    const size = Number(sizeSlider.value);
+    const ratio = tuneTarget.baseHeight / tuneTarget.baseWidth;
+    tuneTarget.img.setAttribute('width', size);
+    tuneTarget.img.setAttribute('height', Math.round(size * ratio));
+    const pos = tuneTarget.wrapper.getAttribute('position');
+    tuneTarget.wrapper.setAttribute('position', `${xSlider.value} ${ySlider.value} ${pos.z}`);
+    sizeVal.textContent = sizeSlider.value;
+    xVal.textContent = xSlider.value;
+    yVal.textContent = ySlider.value;
+    dlog('[tune]', 'width=' + sizeSlider.value, 'x=' + xSlider.value, 'y=' + ySlider.value);
+  }
+
+  [sizeSlider, xSlider, ySlider].forEach((el) => el.addEventListener('input', applyTuneValues));
+  window.__initTuneSliders = initTuneSliders;
+}
 
 // --- PWA install prompt ---
 let deferredInstallPrompt = null;

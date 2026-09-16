@@ -252,6 +252,43 @@ body {
 
 .debug-panel:empty { display: none; }
 
+.tune-panel[hidden] { display: none; }
+
+.tune-panel {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 60px;
+    z-index: 75;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-sm);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.tune-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 50px;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tune-row input[type="range"] {
+    width: 100%;
+}
+
+.tune-row span {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
 .noun-chip-empty {
     color: var(--text-soft);
     font-weight: 600;

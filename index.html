@@ -14,7 +14,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AR Nouns">
 
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=10">
 
   <script src="https://cdn.jsdelivr.net/npm/aframe@1.8.0/dist/aframe-master.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.8/aframe/build/aframe-ar-nft.js"></script>
@@ -75,9 +75,27 @@
       </div>
 
       <pre id="debug-panel" class="debug-panel"></pre>
+
+      <div class="tune-panel" id="tune-panel" hidden>
+        <div class="tune-row">
+          <label for="tune-size">Saiz</label>
+          <input type="range" id="tune-size" min="200" max="3000" step="10">
+          <span id="tune-size-val"></span>
+        </div>
+        <div class="tune-row">
+          <label for="tune-x">Kiri / Kanan</label>
+          <input type="range" id="tune-x" min="-1500" max="1500" step="10">
+          <span id="tune-x-val"></span>
+        </div>
+        <div class="tune-row">
+          <label for="tune-y">Bawah / Atas</label>
+          <input type="range" id="tune-y" min="0" max="3000" step="10">
+          <span id="tune-y-val"></span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
