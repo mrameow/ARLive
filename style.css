@@ -223,7 +223,7 @@ body {
 
 .ar-camera-toggle-btn {
     position: absolute;
-    top: clamp(8px, 2vmin, 16px);
+    bottom: clamp(8px, 2vmin, 16px);
     right: clamp(8px, 2vmin, 16px);
     z-index: 70;
 }
