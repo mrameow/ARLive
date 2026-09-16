@@ -143,8 +143,8 @@ function buildNftEntity(noun) {
   nft.setAttribute('type', 'nft');
   nft.setAttribute('url', new URL(noun.marker, window.location.href).href);
   nft.setAttribute('smooth', 'true');
-  nft.setAttribute('smoothCount', '25');
-  nft.setAttribute('smoothTolerance', '0.01');
+  nft.setAttribute('smoothCount', '60');
+  nft.setAttribute('smoothTolerance', '0.05');
   nft.setAttribute('smoothThreshold', '5');
   nft.dataset.nounId = noun.id;
 
