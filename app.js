@@ -190,7 +190,7 @@ function buildScene() {
   const cameraParametersUrl = new URL('data/camera_para.dat', window.location.href).href;
   const deviceIdPart = selectedCameraId ? ` deviceId: ${selectedCameraId};` : '';
   scene.setAttribute('arjs', `sourceType: webcam; trackingMethod: best; debugUIEnabled: true; cameraParametersUrl: ${cameraParametersUrl};${deviceIdPart}`);
-  scene.setAttribute('renderer', 'logarithmicDepthBuffer: true; precision: medium;');
+  scene.setAttribute('renderer', 'logarithmicDepthBuffer: false; precision: mediump; colorManagement: false;');
 
   nouns.forEach((noun) => {
     try {
@@ -203,6 +203,17 @@ function buildScene() {
   const cameraEl = document.createElement('a-entity');
   cameraEl.setAttribute('camera', '');
   scene.appendChild(cameraEl);
+
+  // TEMP DEBUG: fixed sanity-check box, always in front of camera (not
+  // tied to tracking at all) - if this doesn't show either, rendering
+  // itself is broken on this device, not our NFT/scale logic.
+  const sanityBox = document.createElement('a-box');
+  sanityBox.setAttribute('color', 'lime');
+  sanityBox.setAttribute('width', '0.3');
+  sanityBox.setAttribute('height', '0.3');
+  sanityBox.setAttribute('depth', '0.3');
+  sanityBox.setAttribute('position', '0 0 -1');
+  cameraEl.appendChild(sanityBox);
 
   dlog('[scene built] a-nft count=', scene.querySelectorAll('a-nft').length);
 
