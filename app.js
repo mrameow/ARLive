@@ -122,6 +122,24 @@ function buildNftEntity(noun) {
 
   nft.appendChild(buildModelEntity(noun.model));
 
+  // TEMP DEBUG: two reference boxes at different coordinate-scale guesses,
+  // plus AR.js's own debug border (debugUIEnabled), to find the real scale.
+  const debugBoxMeters = document.createElement('a-box');
+  debugBoxMeters.setAttribute('color', 'red');
+  debugBoxMeters.setAttribute('width', '0.5');
+  debugBoxMeters.setAttribute('height', '0.3');
+  debugBoxMeters.setAttribute('depth', '0.3');
+  debugBoxMeters.setAttribute('position', '0.6 0.2 0');
+  nft.appendChild(debugBoxMeters);
+
+  const debugBoxPixels = document.createElement('a-box');
+  debugBoxPixels.setAttribute('color', 'blue');
+  debugBoxPixels.setAttribute('width', '400');
+  debugBoxPixels.setAttribute('height', '250');
+  debugBoxPixels.setAttribute('depth', '250');
+  debugBoxPixels.setAttribute('position', '-600 250 0');
+  nft.appendChild(debugBoxPixels);
+
   nft.addEventListener('markerFound', () => {
     labelEn.textContent = noun.labels.en;
     labelBm.textContent = noun.labels.bm;
@@ -144,7 +162,7 @@ function buildScene() {
   scene.setAttribute('embedded', '');
   const cameraParametersUrl = new URL('data/camera_para.dat', window.location.href).href;
   const deviceIdPart = selectedCameraId ? ` deviceId: ${selectedCameraId};` : '';
-  scene.setAttribute('arjs', `sourceType: webcam; trackingMethod: best; debugUIEnabled: false; cameraParametersUrl: ${cameraParametersUrl};${deviceIdPart}`);
+  scene.setAttribute('arjs', `sourceType: webcam; trackingMethod: best; debugUIEnabled: true; cameraParametersUrl: ${cameraParametersUrl};${deviceIdPart}`);
   scene.setAttribute('renderer', 'logarithmicDepthBuffer: true; precision: medium;');
 
   nouns.forEach((noun) => scene.appendChild(buildNftEntity(noun)));
